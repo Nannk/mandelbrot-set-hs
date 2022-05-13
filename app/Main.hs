@@ -20,7 +20,7 @@ main = do
     writeImage "mandelbrot_set.png" (manImage::Image VS Y Double)     
     
     putStrLn "showing image"
-    
+
     displayImageUsing fehViewer True manImage
     
     putStrLn "done"

@@ -20,7 +20,7 @@ manFn x c = x*x + c
 -------------------------
 -- new imnplementation --
 -------------------------
-
+    {--
 manList :: Int -> (Int,Complex Double) -> Complex Double ->  [(Int,Complex Double)]
 manList n x c
   | n==0                                                                                                 = []
@@ -38,6 +38,32 @@ floatCheck :: Double -> Double -> Double
 floatCheck a b = manCheck (manList 255 (255,0:+0) z )
     where
         z=a:+b
+--}
+
+----------------------------
+-- new New implementation --
+----------------------------
+
+checker :: Complex Double -> Bool
+checker comp = (C.realPart comp) * (C.realPart comp) + (C.imagPart comp) * (C.imagPart comp) > 42
+
+
+manGradient n = 1-(nD/255)
+    where
+        nD= fromIntegral n
+
+compNumbGradient = compNumbGradientSub 0 
+
+compNumbGradientSub :: Int -> Complex Double -> Complex Double -> Int -> Double
+compNumbGradientSub n x c haltN
+  | n == haltN = manGradient n
+  | checker x = manGradient n
+  | otherwise = compNumbGradientSub (n+1) (manFn x c) c haltN
+
+complexPointCheck :: Double -> Double -> Double
+complexPointCheck a b = compNumbGradient (0:+0) z 255 
+    where
+        z=a:+b
 
 ---------
 -- gui --
@@ -50,10 +76,10 @@ pointX = 0
 pointY = 0
 
 maxBreite :: Int
-maxBreite = 19200
+maxBreite = 1920
 
 maxHoehe :: Int
-maxHoehe = 12800
+maxHoehe = 1280
 
 xoffset = fromIntegral maxBreite/2 + fromIntegral maxBreite*pointX/multiplier
 yoffset = fromIntegral maxHoehe/2 + fromIntegral maxHoehe*pointY/multiplier
@@ -85,4 +111,4 @@ yToIm y = (yF-yoffset)*ymultplier/maxHoeheF
 
 -- Checks, if the pixel with coords x y is in the Set (0,0 is display center)
 pixelCheck :: Int -> Int -> Double
-pixelCheck x y = floatCheck (xToRe x) (yToIm y)
+pixelCheck x y = complexPointCheck (xToRe x) (yToIm y)

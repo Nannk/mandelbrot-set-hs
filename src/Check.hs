@@ -17,29 +17,6 @@ import Graphics.Image.IO as GiIO
 manFn :: Complex Double -> Complex Double -> Complex Double
 manFn x c = x*x + c
 
--------------------------
--- new imnplementation --
--------------------------
-    {--
-manList :: Int -> (Int,Complex Double) -> Complex Double ->  [(Int,Complex Double)]
-manList n x c
-  | n==0                                                                                                 = []
-  | (C.realPart (snd x)) * (C.realPart (snd x)) + (C.imagPart (snd x)) * (C.imagPart (snd x)) > 42       = [] 
-  | otherwise                                                                                            = x:(manList (n-1) (n-1,(manFn (snd x) c)) c)
-
-
-manCheck :: [(Int, Complex Double)] -> Double
-manCheck xs = 1-(xsF/255)
-   where
-        xsF = fromIntegral (fst (last xs)) :: Double
-
-
-floatCheck :: Double -> Double -> Double
-floatCheck a b = manCheck (manList 255 (255,0:+0) z )
-    where
-        z=a:+b
---}
-
 ----------------------------
 -- new New implementation --
 ----------------------------
@@ -48,7 +25,7 @@ checker :: Complex Double -> Bool
 checker comp = (C.realPart comp) * (C.realPart comp) + (C.imagPart comp) * (C.imagPart comp) > 42
 
 
-manGradient n = 1-(nD/255)
+manGradient n = (nD/255)
     where
         nD= fromIntegral n
 
@@ -69,45 +46,42 @@ complexPointCheck a b = compNumbGradient (0:+0) z 255
 -- gui --
 ---------
 
--- ein paar nutzlicher konstanten
-
--- Image resolution
+-- Point of Interest
 pointX = 0
 pointY = 0
 
-maxBreite :: Int
-maxBreite = 1920
+-- Image resolution
+breite :: Int
+breite = 19200
 
-maxHoehe :: Int
-maxHoehe = 1280
+hoehe :: Int
+hoehe = 12800
 
-xoffset = fromIntegral maxBreite/2 + fromIntegral maxBreite*pointX/multiplier
-yoffset = fromIntegral maxHoehe/2 + fromIntegral maxHoehe*pointY/multiplier
+-- Offset, so the Point Of Interest would be in the Center of the screen
+xoffset = fromIntegral breite/2 + fromIntegral breite*pointX/multiplier
+yoffset = fromIntegral hoehe/2 + fromIntegral hoehe*pointY/multiplier
 
 -- Zoooooo~~~~~~oom
 multiplier = 2
 
-xmultiplier=multiplier*1.5 --more like Achsen-Maßstab...
+-- Achsen Massstab
+xmultiplier=multiplier*1.5 
 ymultplier=multiplier
 
--- convert point to offset
-pointToOffsetX :: Int -> Double
-pointToOffsetX x = xmultiplier*fromIntegral maxBreite/2
-
--- Convertation - funktionen
+-- Convert from Pixel koordinate to point on Complex plane
 -- X-Achse
 xToRe :: Int -> Double
-xToRe x = (xF-xoffset)*xmultiplier/maxBreiteF
+xToRe x = (xF-xoffset)*xmultiplier/breiteF
      where
          xF = fromIntegral x :: Double
-         maxBreiteF = fromIntegral maxBreite :: Double
+         breiteF = fromIntegral breite :: Double
 
 -- Y-Achse
 yToIm :: Int -> Double
-yToIm y = (yF-yoffset)*ymultplier/maxHoeheF
+yToIm y = (yF-yoffset)*ymultplier/hoeheF
     where
         yF = fromIntegral y :: Double
-        maxHoeheF = fromIntegral maxHoehe :: Double
+        hoeheF = fromIntegral hoehe :: Double
 
 -- Checks, if the pixel with coords x y is in the Set (0,0 is display center)
 pixelCheck :: Int -> Int -> Double

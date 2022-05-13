@@ -13,7 +13,7 @@ import Check
 
 main :: IO()
 main = do
-    let manImage = makeImageR VS (maxHoehe, maxBreite) (\(j, i) -> PixelY (Check.pixelCheck i j))
+    let manImage = makeImageR VS (hoehe, breite) (\(j, i) -> PixelY (Check.pixelCheck i j))
    
     putStrLn "Started"
     
